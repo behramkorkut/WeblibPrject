@@ -1,5 +1,7 @@
 package com.yenimobile.weblibprject.ui;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -7,7 +9,10 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -67,7 +72,8 @@ public class ImagesearchActivity extends AppCompatActivity {
                     String input = mSearchInputET.getText().toString();
                     String request = buidRequestString(input);
                     jsoncall(request);
-                    mSearchButton.setVisibility(View.GONE);
+                    hideKeyboard(ImagesearchActivity.this);
+
                 }else {
                     Toast.makeText(ImagesearchActivity.this, "please fill in text in the search bar",
                             Toast.LENGTH_SHORT).show();
@@ -87,6 +93,16 @@ public class ImagesearchActivity extends AppCompatActivity {
 
         String requestString = BASEURL + "tagged?tag="+tag+"&api_key=" + APIKEY;
         return requestString;
+    }
+
+
+    public static void hideKeyboard( Activity activity ) {
+        InputMethodManager imm = (InputMethodManager)activity.getSystemService( Context.INPUT_METHOD_SERVICE );
+        View f = activity.getCurrentFocus();
+        if( null != f && null != f.getWindowToken() && EditText.class.isAssignableFrom( f.getClass() ) )
+            imm.hideSoftInputFromWindow( f.getWindowToken(), 0 );
+        else
+            activity.getWindow().setSoftInputMode( WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN );
     }
 
 
